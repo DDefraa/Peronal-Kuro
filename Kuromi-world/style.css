@@ -1,0 +1,373 @@
+/* =====================================================================
+   KUROMI WORLD · stile
+   Indice (chiudi/apri le sezioni con il ▸ di VS Code):
+     1. VARIABILI      -> colori e livelli: cambia il look da qui
+     2. BASE           -> reset, pagina a schermo intero, tipografia
+     3. COMPONENTI     -> bottoni, input, barre (riusati ovunque)
+     4. MENU
+     5. HOME
+     6. DIARIO         (.t0-.t3 = temi, legati al <select id="theme">)
+     7. MUSICA
+     8. FOTO           (.f0-.f4 cornici, .g0-.g4 filtri: legati ai select)
+     9. FINESTRE       -> editor foto e dialogo
+    10. MENU          -> schermata con tutte le sezioni
+    11. NUOVE SEZIONI -> giorni insieme, sogni, biscotto
+    12. TEMI          -> Kuromi, XP, Cyberpunk, Skyrim, Webcore
+    13. ACCESSIBILITÀ
+   ===================================================================== */
+
+
+/* #region 1. VARIABILI */
+:root {
+  --bg:    #1a1027;   /* sfondo scuro */
+  --card:  #2a1a3f;   /* riquadri */
+  --p:     #b57bff;   /* viola */
+  --pk:    #ff8ac9;   /* rosa */
+  --dark:  #1a1027;   /* testo su sfondo rosa */
+  --text:  #fff;      /* colore del testo */
+  --field-bg: #120a1d;/* sfondo dei campi di testo */
+  --nav-bg: #0e0817;  /* barra del menu */
+  --radius: 20px;     /* arrotondamento dei bottoni */
+  --font: Fredoka, sans-serif;
+  --font-title: Pacifico, cursive;
+  --sky: linear-gradient(#1a1027, #3b1f5c 60%, #6b2f7c);
+  --ground: linear-gradient(#4b8f5e, #2a5a3a 25%, #2d1747);
+  --grass: #7bd88f;
+  --z-modal:  9;      /* editor foto */
+  --z-dialog: 99;     /* conferme: sempre sopra a tutto */
+}
+/* #endregion */
+
+
+/* #region 2. BASE */
+* { box-sizing: border-box; margin: 0; }
+
+/* niente scroll di pagina: il sito sta tutto a schermo */
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+small { opacity: .7; }
+/* l'attributo hidden vince sempre (altrimenti .bar con display:flex lo ignora) */
+[hidden] { display: none !important; }
+:focus-visible { outline: 3px solid var(--pk); outline-offset: 2px; }
+
+main { flex: 1; position: relative; min-height: 0; }
+
+/* ogni sezione occupa tutto <main>; si vede solo quella con .on */
+.view {
+  position: absolute; inset: 0;
+  display: none; flex-direction: column; gap: 8px;
+  padding: 10px;
+}
+.view.on { display: flex; }
+/* #endregion */
+
+
+/* #region 3. COMPONENTI */
+button, select, input { font: inherit; }
+
+button, .btn {
+  background: var(--p); color: #fff;
+  border: 0; border-radius: var(--radius);
+  padding: 6px 14px; cursor: pointer;
+}
+button:hover, .btn:hover { background: var(--pk); color: var(--dark); }
+
+select, input:not([type]), input[type=text], input[type=date] {
+  border-radius: 12px; border: 2px solid var(--p);
+  background: var(--field-bg); color: var(--text); padding: 5px 8px;
+}
+
+/* riga di controlli */
+.bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+/* #endregion */
+
+
+/* #region 4. MENU */
+nav {
+  display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+  gap: 8px; padding: 8px;
+  background: var(--nav-bg); border-bottom: 3px solid var(--pk);
+}
+nav b { font-family: var(--font-title); font-weight: 400; color: var(--pk); margin-right: 8px; }
+nav button.on { background: var(--pk); color: var(--dark); }
+/* #endregion */
+
+
+/* #region 5. HOME */
+#home { padding: 0; background: var(--sky); }
+
+/* cielo: parte alta, dove scorrono le frasi */
+#sky { position: absolute; inset: 0 0 42% 0; overflow: hidden; }
+.ph {
+  position: absolute; left: 100%; white-space: nowrap;
+  font-family: var(--font-title); text-shadow: 0 0 10px #000;
+  animation: drift linear forwards;     /* durata impostata da app.js */
+}
+@keyframes drift { to { transform: translateX(calc(-100vw - 110%)); } }
+
+#hello {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center; pointer-events: none;
+  font-family: var(--font-title); font-size: clamp(22px, 5vw, 44px);
+  color: var(--pk); text-shadow: 0 0 14px #000;
+}
+#hello small { display: block; font: 14px Fredoka; color: #fff; }
+
+/* giardino: i fiori nascono qui (creati da app.js) */
+#garden { position: absolute; left: 0; right: 0; bottom: 9%; height: 50%; cursor: pointer; }
+#ground {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 10%;
+  background: var(--ground);
+  border-top: 4px solid var(--grass); pointer-events: none;
+}
+
+/* fiore: crescita (sul contenitore) + dondolio (sull'SVG) */
+.flower {
+  position: absolute; bottom: 0; transform-origin: 50% 100%;
+  animation: grow 2.6s cubic-bezier(.3, 1.5, .5, 1) both;
+}
+.flower svg {
+  height: 100%; width: auto; display: block;
+  transform-origin: 50% 100%; animation: sway 4s ease-in-out infinite alternate;
+}
+@keyframes grow { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes sway { to { transform: rotate(4deg); } }
+/* #endregion */
+
+
+/* #region 6. DIARIO */
+#title { flex: 1; min-width: 140px; }
+
+#paper {
+  flex: 1; overflow: auto; outline: 0;
+  padding: 22px; font: 18px Fredoka;
+  border-radius: 14px; border: 4px solid var(--pk);
+}
+
+/* temi: per aggiungerne uno crea .t4 e una <option value="4"> */
+.t0 { background: #22142f; color: #f3e6ff; border-style: dashed !important; }
+.t1 { background: radial-gradient(#ffc2e0 2px, transparent 3px) 0 0 / 22px 22px, #ffe8f3; color: #5a2a4a; }
+.t2 { background: linear-gradient(135deg, #efe3ff, #d9c4ff); color: #38206a; border-color: var(--p) !important; }
+.t3 { background: repeating-linear-gradient(#fffaf0 0 31px, #cdb6f5 31px 32px); color: #2b2140; line-height: 32px; border-color: #2b2140 !important; }
+/* #endregion */
+
+
+/* #region 7. MUSICA */
+#mwrap { flex: 1; min-height: 0; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: center; }
+
+/* disco in vinile: ferma di base, gira con la classe .play (messa da app.js) */
+#disc {
+  position: relative; width: min(42vh, 70vw); aspect-ratio: 1;
+  border-radius: 50%; border: 4px solid var(--p); box-shadow: 0 0 30px #b57bff88;
+  background:
+    radial-gradient(circle, #000 0 3%, var(--pk) 4% 22%, transparent 23%),
+    repeating-radial-gradient(#0c0c0c 0 3px, #262626 4px 5px);
+  animation: spin 4s linear infinite paused;
+}
+#disc::after { content: "💀"; position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(20px, 6vh, 48px); }
+#disc.play { animation-play-state: running; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#side { width: min(320px, 90vw); display: flex; flex-direction: column; gap: 8px; }
+#seek { width: 100%; accent-color: var(--pk); }
+
+#list { padding: 0; list-style: none; max-height: 30vh; overflow: auto; display: flex; flex-direction: column; gap: 4px; }
+#list li { padding: 6px 10px; border-radius: 12px; background: var(--card); cursor: pointer; }
+#list li.cur { background: var(--pk); color: var(--dark); }
+/* #endregion */
+
+
+/* #region 8. FOTO */
+#grid {
+  flex: 1; overflow: auto; padding: 8px;      /* scorre solo la galleria, non la pagina */
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px; align-content: start;
+}
+.empty { grid-column: 1 / -1; text-align: center; opacity: .7; margin-top: 10vh; }
+
+.card {
+  position: relative; background: var(--card); cursor: pointer;
+  transform: rotate(var(--r, 0deg)); transition: transform .2s;   /* --r impostata da app.js */
+}
+.card:hover { transform: rotate(var(--r, 0deg)) scale(1.04); }
+.card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.card p { font: 20px Caveat; text-align: center; color: inherit; }
+.stk { position: absolute; top: -6px; left: -6px; max-width: 100%; font-size: 22px; pointer-events: none; }
+
+/* cornici (value del select #fr) */
+.f0 { background: none; }
+.f1 { background: #fff; padding: 8px 8px 4px; color: #333; box-shadow: 0 4px 12px #0008; }
+.f2 { border: 6px solid var(--pk); border-radius: 16px; overflow: hidden; padding: 0; }
+.f3 { border: 6px solid #000; outline: 3px solid var(--p); background: #000; }
+.f4 img { border-radius: 50%; border: 5px solid var(--pk); }
+
+/* filtri (value del select #fl) */
+.g1 { filter: grayscale(1); }
+.g2 { filter: sepia(.9); }
+.g3 { filter: saturate(1.7) contrast(1.1); }
+.g4 { filter: brightness(1.1) saturate(1.3) blur(.6px); }
+/* #endregion */
+
+
+/* #region 9. FINESTRE (editor foto e dialogo: stesso schema) */
+#ed, #dlg {
+  position: fixed; inset: 0; display: grid; place-items: center;
+  background: #000b; z-index: var(--z-modal);
+}
+#dlg { z-index: var(--z-dialog); }
+#ed[hidden], #dlg[hidden] { display: none; }
+
+#edbox {
+  display: flex; flex-wrap: wrap; gap: 18px; justify-content: center;
+  max-width: 95vw; max-height: 92dvh; overflow: auto;
+  padding: 16px; background: var(--bg); border: 3px solid var(--pk); border-radius: 20px;
+}
+#pv  { width: min(260px, 70vw); }
+#ctl { width: min(260px, 80vw); display: flex; flex-direction: column; gap: 10px; }
+#emo { display: flex; flex-wrap: wrap; gap: 6px; }
+
+#dbox {
+  max-width: min(340px, 90vw); padding: 20px; text-align: center;
+  display: flex; flex-direction: column; gap: 14px;
+  background: var(--bg); border: 3px solid var(--pk); border-radius: 20px;
+}
+#dbox .bar { justify-content: center; }
+/* #endregion */
+
+
+/* #region 10. MENU */
+.desc { opacity: .85; max-width: 70ch; }
+.marquee { overflow: hidden; white-space: nowrap; border: 2px solid var(--pk); background: var(--card); }
+.marquee span { display: inline-block; padding-left: 100%; animation: scroll 18s linear infinite; }
+@keyframes scroll { to { transform: translateX(-100%); } }
+
+#tiles {
+  flex: 1; overflow: auto; padding: 4px; align-content: start;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;
+}
+.tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  padding: 12px; text-align: left;
+  background: var(--card); color: var(--text); border: 2px solid var(--p);
+}
+.tile b { font: 18px var(--font-title); }
+.tile small { opacity: .8; }
+.tile:hover { transform: translateY(-3px); }
+#themes button.sel { background: var(--pk); color: var(--dark); }
+
+.led { font: 20px monospace; letter-spacing: 3px; padding: 2px 8px; background: #000; color: #0f0; border: 2px inset #888; }
+.blink { color: var(--pk); font-weight: 600; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* bottoncini 88x31 (solo tema Webcore) */
+#badges { display: none; gap: 6px; flex-wrap: wrap; }
+html[data-theme=webcore] #badges { display: flex; }
+.badge { width: 88px; height: 31px; display: grid; place-items: center; text-align: center; color: #fff; border: 2px outset #ddd; font: 700 10px/1.1 Arial, sans-serif; }
+.b1 { background: linear-gradient(#f0f, #80f); }
+.b2 { background: #008000; }
+.b3 { background: #000; color: #0f0; font-family: monospace; }
+.b4 { background: linear-gradient(#ff0, #f80); color: #000; }
+.b5 { background: #00c; animation: blink 1.4s steps(2) infinite; }
+/* #endregion */
+
+
+/* #region 11. NUOVE SEZIONI */
+/* giorni insieme */
+#daysout { flex: 1; display: grid; place-content: center; text-align: center; gap: 10px; }
+#daysbig { font: clamp(32px, 9vw, 72px) var(--font-title); color: var(--pk); }
+#daysnext { opacity: .85; }
+
+/* sogni */
+#dform input { flex: 1; min-width: 160px; }
+#dlist { flex: 1; overflow: auto; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+#dlist li { display: flex; gap: 10px; align-items: center; padding: 8px 12px; background: var(--card); border-radius: var(--radius); cursor: pointer; }
+#dlist li span:nth-child(2) { flex: 1; }
+#dlist li.done span:nth-child(2) { text-decoration: line-through; opacity: .6; }
+#dlist li button { padding: 2px 8px; }
+#dlist li.empty { justify-content: center; cursor: default; opacity: .7; margin-top: 0; }
+
+/* biscotto */
+#cookiewrap { display: grid; justify-items: center; gap: 10px; text-align: center; }
+#cookie { padding: 0; background: none; border-radius: 0; }
+#cookie:hover { background: none; transform: scale(1.05); }
+#cookie svg { display: block; height: min(24vh, 170px); width: auto; overflow: visible; }
+.ckL, .ckR { fill: #f2b95b; stroke: #b9772a; stroke-width: 4; stroke-linejoin: round; transform-origin: 100px 112px; transition: transform .6s cubic-bezier(.3, 1.4, .5, 1); }
+.ckR { fill: #f7c872; }
+.slip { opacity: 0; transform: translateY(26px); transition: transform .6s .1s, opacity .4s .1s; }
+.slip rect { fill: #fffbe8; stroke: #d9c9a0; stroke-width: 2; }
+.slip path { stroke: #c9b27c; stroke-width: 2; }
+#cookie.open .ckL { transform: translate(-24px, 4px) rotate(-20deg); }
+#cookie.open .ckR { transform: translate(24px, 4px) rotate(20deg); }
+#cookie.open .slip { opacity: 1; transform: translateY(-14px); }
+#cookie.shake svg { animation: wiggle .6s; }
+@keyframes wiggle { 20% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } 80% { transform: rotate(-5deg); } }
+#ftext { max-width: min(420px, 90vw); padding: 10px 16px; transform: rotate(-1deg); background: #fffbe8; color: #5a2a4a; border: 2px dashed #c9b27c; font: clamp(17px, 3vw, 24px) var(--font-title); }
+.sub { font: 18px var(--font-title); color: var(--pk); }
+#pins { flex: 1; overflow: auto; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+#pins li { display: flex; gap: 10px; align-items: center; padding: 8px 12px; background: var(--card); border-radius: var(--radius); }
+#pins li span { flex: 1; }
+#pins li button { padding: 2px 8px; }
+#pins li.empty { justify-content: center; opacity: .7; margin-top: 0; }
+/* #endregion */
+
+
+/* #region 12. TEMI (si attivano con data-theme su <html>; basta ridefinire le variabili) */
+html[data-theme=xp] {
+  --bg:#ece9d8; --card:#fff; --p:#245edb; --pk:#3c9d3c; --dark:#fff; --text:#000; --field-bg:#fff;
+  --nav-bg:linear-gradient(#3a81f5,#245edb 50%,#1c4fb8); --radius:4px;
+  --font:Tahoma,'Segoe UI',sans-serif; --font-title:'Trebuchet MS',sans-serif;
+  --sky:linear-gradient(#2a6fd6,#7ab8ff 60%,#d6efff); --ground:linear-gradient(#6bc04a,#2f7d1a); --grass:#9be07a;
+}
+html[data-theme=xp] nav b { color:#fff; font-style:italic; }
+html[data-theme=xp] nav button { background:#ece9d8; color:#000; border:1px solid #fff; }
+html[data-theme=xp] nav button:hover { background:#fff; }
+html[data-theme=xp] nav button.on { background:var(--pk); color:#fff; }
+
+html[data-theme=cyber] {
+  --bg:#0a0014; --card:#150a2a; --p:#00c8d6; --pk:#ff2a6d; --dark:#000; --text:#d9f7ff; --field-bg:#000;
+  --nav-bg:#000; --radius:0; --font:'Share Tech Mono','Courier New',monospace; --font-title:Orbitron,sans-serif;
+  --sky:linear-gradient(#05000d,#240a45 60%,#5a1a6e); --ground:linear-gradient(#ff2a6d,#2a0a4a 35%,#0a0014); --grass:#00f0ff;
+}
+html[data-theme=cyber] button, html[data-theme=cyber] .btn { color:#000; box-shadow:0 0 8px var(--p); }
+html[data-theme=cyber] nav b, html[data-theme=cyber] #hello { text-shadow:0 0 10px currentColor; }
+html[data-theme=cyber] body::after { content:""; position:fixed; inset:0; pointer-events:none; z-index:50; background:repeating-linear-gradient(#0000 0 2px,#0004 3px); }
+
+html[data-theme=skyrim] {
+  --bg:#14181c; --card:#222a30; --p:#5d6d78; --pk:#c9b27c; --dark:#10151a; --text:#e7e2d3; --field-bg:#0c1014;
+  --nav-bg:#0b0e11; --radius:2px; --font:Cinzel,serif; --font-title:Cinzel,serif;
+  --sky:linear-gradient(#0f1a24,#4a6275 55%,#c8d6df); --ground:linear-gradient(#f2f6f8,#a9b9c3 30%,#3a4650); --grass:#fff;
+}
+html[data-theme=skyrim] nav { border-bottom-style:double; border-bottom-width:6px; }
+
+html[data-theme=webcore] {
+  --bg:#000044; --card:#1a1a80; --p:#c000c0; --pk:#00e000; --dark:#000; --text:#fff; --field-bg:#000066;
+  --nav-bg:repeating-linear-gradient(45deg,#000080 0 10px,#0000b0 10px 20px); --radius:0;
+  --font:'Comic Sans MS','Comic Neue',cursive; --font-title:VT323,monospace;
+  --sky:radial-gradient(#fff 1px,#0000 1.5px) 0 0/37px 37px,radial-gradient(#ff0 1px,#0000 1.5px) 18px 18px/53px 53px,#000044;
+  --ground:repeating-linear-gradient(45deg,#f0f 0 10px,#0ff 10px 20px); --grass:#ff0;
+}
+html[data-theme=webcore] body { background:var(--sky); }
+html[data-theme=webcore] button, html[data-theme=webcore] .btn { border:3px outset #eee; }
+html[data-theme=webcore] .marquee { background:#000; color:#ff0; border-style:ridge; border-width:4px; }
+/* cursore a cuore e stelle che scorrono (due layer a tasselli: nessuno scatto nel loop) */
+html[data-theme=webcore] { --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12 21C5 15 3 11 3 8a4.5 4.5 0 0 1 9-1 4.5 4.5 0 0 1 9 1c0 3-2 7-9 13z' fill='%23ff00ff' stroke='white' stroke-width='2'/%3E%3C/svg%3E") 12 12, auto; }
+html[data-theme=webcore] * { cursor: var(--cursor); }
+html[data-theme=webcore] body, html[data-theme=webcore] #home { animation: stars 6s linear infinite; }
+@keyframes stars { from { background-position: 0 0, 18px 18px, 0 0; } to { background-position: 0 37px, 18px 71px, 0 0; } }
+/* #endregion */
+
+
+/* #region 13. ACCESSIBILITÀ */
+@media (prefers-reduced-motion: reduce) {
+  .flower svg, #disc, .marquee span, .blink, #cookie.shake svg, html[data-theme=webcore] body, html[data-theme=webcore] #home { animation: none; }
+  .ckL, .ckR, .slip { transition: none; }
+}
+/* #endregion */

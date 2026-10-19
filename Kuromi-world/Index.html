@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="it">
+<!-- =====================================================================
+  KUROMI WORLD · struttura della pagina
+  ATTENZIONE: gli id (#title, #paper, #pp ...) sono usati da app.js.
+  Se rinomini un id qui, rinominalo anche in app.js.
+  Per ogni sezione: id della <section> = data-v del pulsante nel menu.
+===================================================================== -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kuromi World 💜</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Pacifico&family=Caveat&family=Special+Elite&family=Orbitron&family=Share+Tech+Mono&family=Cinzel&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- #region MENU -->
+<nav>
+  <b>Kuromi 💀</b>
+  <!-- i pulsanti sono generati da app.js a partire da CONFIG.sections -->
+</nav>
+<!-- #endregion -->
+
+<main>
+
+  <!-- #region SEZIONE HOME: frasi nel cielo + fiori sul prato -->
+  <section id="home" class="view on">
+    <div id="sky"></div>
+    <div id="hello">per te 🖤<small>tocca il prato per far nascere un fiore</small></div>
+    <div id="garden"></div>
+    <div id="ground"></div>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE DIARIO: editor + esportazione -->
+  <section id="docs" class="view">
+    <div class="bar">
+      <input id="title" placeholder="Titolo del documento">
+      <!-- i value dei temi (0-3) corrispondono alle classi .t0-.t3 in style.css -->
+      <select id="theme">
+        <option value="0">🖤 Kuromi notte</option>
+        <option value="1">🎀 Rosa pastello</option>
+        <option value="2">💜 Lavanda</option>
+        <option value="3">📒 Quaderno</option>
+      </select>
+      <select id="font">
+        <option value="Fredoka">Fredoka</option>
+        <option value="Pacifico">Pacifico</option>
+        <option value="Caveat">Caveat</option>
+        <option value="Special Elite">Macchina da scrivere</option>
+      </select>
+      <select id="size"><option>16</option><option selected>18</option><option>22</option><option>28</option></select>
+      <button data-cmd="bold"><b>B</b></button>
+      <button data-cmd="italic"><i>I</i></button>
+      <button data-cmd="underline"><u>U</u></button>
+      <input type="color" id="color" value="#ff8ac9">
+    </div>
+
+    <div id="paper" class="t0" contenteditable="true"></div>
+
+    <div class="bar">
+      <button id="new">✨ Nuovo</button>
+      <button id="word">⬇ Word</button>
+      <button id="pdf">⬇ PDF</button>
+      <small>Salvataggio automatico</small>
+    </div>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE MUSICA: caricamento, disco, player, playlist -->
+  <section id="music" class="view">
+    <div class="bar">
+      <label class="btn">🎵 Carica musica<input type="file" id="mfile" accept="audio/*" multiple hidden></label>
+      <span id="now">Nessun brano</span>
+    </div>
+    <div id="mwrap">
+      <div id="disc"></div>
+      <div id="side">
+        <div class="bar"><button id="prev">⏮</button><button id="pp">▶</button><button id="next">⏭</button></div>
+        <input type="range" id="seek" min="0" max="1000" value="0">
+        <ul id="list"></ul>
+      </div>
+    </div>
+    <audio id="au"></audio>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE FOTO: galleria + editor -->
+  <section id="photos" class="view">
+    <div class="bar">
+      <label class="btn">📷 Carica foto<input type="file" id="pfile" accept="image/*" multiple hidden></label>
+      <small>Tocca una foto per personalizzarla</small>
+    </div>
+    <div id="grid"></div>
+
+    <!-- editor: finestra sopra la galleria. Value di cornici/filtri = classi .f0-.f4 / .g0-.g4 -->
+    <div id="ed" hidden>
+      <div id="edbox">
+        <div id="pv"></div>
+        <div id="ctl">
+          <label>Cornice
+            <select id="fr">
+              <option value="0">Nessuna</option><option value="1">Polaroid</option>
+              <option value="2">Rosa</option><option value="3">Nera</option><option value="4">Tonda</option>
+            </select>
+          </label>
+          <label>Filtro
+            <select id="fl">
+              <option value="0">Originale</option><option value="1">Bianco e nero</option>
+              <option value="2">Seppia</option><option value="3">Vivace</option><option value="4">Sognante</option>
+            </select>
+          </label>
+          <input id="cap" placeholder="Scrivi una dedica…">
+          <label>Inclina <input type="range" id="rot" min="-15" max="15" value="0"></label>
+          <div id="emo">
+            <button>💀</button><button>🎀</button><button>💜</button><button>🖤</button><button>⭐</button><button>🌸</button>
+            <button id="nost">🧹</button>
+          </div>
+          <div class="bar"><button id="del">🗑 Elimina</button><button id="close">Fatto</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE MENU: pagina d'ingresso con tutte le sezioni, temi e contatore -->
+  <section id="menu" class="view">
+    <div class="marquee"><span>✨ Benvenuta nel mondo di Kuromi ✨ scegli dove andare ✨ cambia tema qui sotto ✨ best viewed with love 💜</span></div>
+    <div id="tiles"></div>
+    <div class="bar"><b>Tema:</b><span id="themes" class="bar"></span></div>
+    <div class="bar"><small>Visitatrice n.</small><span id="visits" class="led">000000</span><span class="blink">NEW!</span></div>
+    <!-- bottoncini 88x31 stile anni 2000: si vedono solo nel tema Webcore -->
+    <div id="badges"><span class="badge b1">Made with 💜</span><span class="badge b2">Kuromi Fan Club</span><span class="badge b3">100% HTML</span><span class="badge b4">Best viewed with love</span><span class="badge b5">NEW!!</span></div>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE GIORNI INSIEME: contatore dalla data di inizio -->
+  <section id="days" class="view">
+    <p class="desc">💌 Scegli il giorno in cui è iniziata la vostra storia: il sito conta i giorni e ti dice quanto manca al prossimo traguardo (ogni 100 giorni).</p>
+    <div class="bar"><label>Dal <input type="date" id="since"></label></div>
+    <div id="daysout"><div id="daysbig"></div><div id="daysdet"></div><div id="daysnext"></div></div>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE SOGNI: lista di cose da fare insieme -->
+  <section id="dreams" class="view">
+    <p class="desc">⭐ Scrivi i vostri sogni e le cose da fare insieme: tocca una riga per spuntarla quando si avvera.</p>
+    <form class="bar" id="dform"><input id="dtext" placeholder="Un sogno o una cosa da fare insieme…" autocomplete="off"><button id="dadd" type="submit">Aggiungi</button><small id="dcount"></small></form>
+    <ul id="dlist"></ul>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE BISCOTTO: pensierino casuale -->
+  <section id="fortune" class="view">
+    <p class="desc">🥠 Tocca il biscotto per aprirlo e leggere il pensierino. Con 📌 lo fissi: resta salvato qui sotto.</p>
+    <div id="cookiewrap">
+      <button id="cookie" aria-label="Apri il biscotto">
+        <!-- biscotto disegnato in SVG: le due metà si aprono e esce il bigliettino (animazione in style.css §11) -->
+        <svg viewBox="0 0 200 140" aria-hidden="true">
+          <g class="slip"><rect x="52" y="52" width="96" height="26" rx="2"/><path d="M62 62h76M62 70h50"/></g>
+          <path class="ckL" d="M100 22C55 12 14 48 20 98c20 20 60 24 80 14z"/>
+          <path class="ckR" d="M100 22c45-10 86 26 80 76-20 20-60 24-80 14z"/>
+        </svg>
+      </button>
+      <p id="ftext" hidden></p>
+      <div class="bar" id="factions" hidden><button id="pin">📌 Fissa</button><button id="again">🥠 Un altro</button></div>
+    </div>
+    <h3 class="sub">📌 Frasi fissate</h3>
+    <ul id="pins"></ul>
+  </section>
+  <!-- #endregion -->
+
+</main>
+
+<!-- #region DIALOGO GLOBALE (conferme/avvisi, usato da ask() in app.js) -->
+<div id="dlg" hidden>
+  <div id="dbox">
+    <p id="dmsg"></p>
+    <div class="bar"><button id="dno">Annulla</button><button id="dyes">Conferma</button></div>
+  </div>
+</div>
+<!-- #endregion -->
+
+<!-- #region SCRIPT (l'ordine conta: prima la libreria PDF, poi app.js) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="app.js"></script>
+<!-- #endregion -->
+
+</body>
+</html>
