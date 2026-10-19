@@ -9,16 +9,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kuromi World 💜</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Pacifico&family=Caveat&family=Special+Elite&family=Orbitron&family=Share+Tech+Mono&family=Cinzel&family=VT323&display=swap" rel="stylesheet">
+<title>Kuromi World</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Pacifico&family=Caveat&family=Special+Elite&family=Orbitron&family=Share+Tech+Mono&family=Cinzel&family=VT323&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- #region MENU -->
 <nav>
-  <b>Kuromi 💀</b>
   <!-- i pulsanti sono generati da app.js a partire da CONFIG.sections -->
+  <span id="clock"></span>
 </nav>
 <!-- #endregion -->
 
@@ -27,7 +27,7 @@
   <!-- #region SEZIONE HOME: frasi nel cielo + fiori sul prato -->
   <section id="home" class="view on">
     <div id="sky"></div>
-    <div id="hello">per te 🖤<small>tocca il prato per far nascere un fiore</small></div>
+    <div id="hello">per te <small>tocca il prato per far nascere un fiore</small></div>
     <div id="garden"></div>
     <div id="ground"></div>
   </section>
@@ -39,10 +39,10 @@
       <input id="title" placeholder="Titolo del documento">
       <!-- i value dei temi (0-3) corrispondono alle classi .t0-.t3 in style.css -->
       <select id="theme">
-        <option value="0">🖤 Kuromi notte</option>
-        <option value="1">🎀 Rosa pastello</option>
-        <option value="2">💜 Lavanda</option>
-        <option value="3">📒 Quaderno</option>
+        <option value="0">Kuromi notte</option>
+        <option value="1">Rosa pastello</option>
+        <option value="2">Lavanda</option>
+        <option value="3">Quaderno</option>
       </select>
       <select id="font">
         <option value="Fredoka">Fredoka</option>
@@ -60,9 +60,9 @@
     <div id="paper" class="t0" contenteditable="true"></div>
 
     <div class="bar">
-      <button id="new">✨ Nuovo</button>
-      <button id="word">⬇ Word</button>
-      <button id="pdf">⬇ PDF</button>
+      <button id="new">Nuovo</button>
+      <button id="word">Scarica Word</button>
+      <button id="pdf">Scarica PDF</button>
       <small>Salvataggio automatico</small>
     </div>
   </section>
@@ -71,13 +71,13 @@
   <!-- #region SEZIONE MUSICA: caricamento, disco, player, playlist -->
   <section id="music" class="view">
     <div class="bar">
-      <label class="btn">🎵 Carica musica<input type="file" id="mfile" accept="audio/*" multiple hidden></label>
+      <label class="btn">Carica musica<input type="file" id="mfile" accept="audio/*" multiple hidden></label>
       <span id="now">Nessun brano</span>
     </div>
     <div id="mwrap">
       <div id="disc"></div>
       <div id="side">
-        <div class="bar"><button id="prev">⏮</button><button id="pp">▶</button><button id="next">⏭</button></div>
+        <div class="bar"><button id="prev">&lt;&lt;</button><button id="pp">&gt;</button><button id="next">&gt;&gt;</button></div>
         <input type="range" id="seek" min="0" max="1000" value="0">
         <ul id="list"></ul>
       </div>
@@ -89,35 +89,38 @@
   <!-- #region SEZIONE FOTO: galleria + editor -->
   <section id="photos" class="view">
     <div class="bar">
-      <label class="btn">📷 Carica foto<input type="file" id="pfile" accept="image/*" multiple hidden></label>
+      <label class="btn">Carica foto<input type="file" id="pfile" accept="image/*" multiple hidden></label>
       <small>Tocca una foto per personalizzarla</small>
     </div>
     <div id="grid"></div>
 
-    <!-- editor: finestra sopra la galleria. Value di cornici/filtri = classi .f0-.f4 / .g0-.g4 -->
+    <!-- editor: finestra sopra la galleria. Value di cornici/filtri = classi .f0-.f5 / .g0-.g6 -->
     <div id="ed" hidden>
       <div id="edbox">
         <div id="pv"></div>
         <div id="ctl">
+          <small>Trascina le emoji sulla foto · doppio tap per toglierle</small>
           <label>Cornice
-            <select id="fr">
-              <option value="0">Nessuna</option><option value="1">Polaroid</option>
-              <option value="2">Rosa</option><option value="3">Nera</option><option value="4">Tonda</option>
-            </select>
+            <select id="fr"><option value="0">Nessuna</option><option value="1">Polaroid</option><option value="2">Arrotondata</option><option value="3">Nera</option><option value="4">Tonda</option><option value="5">Puntini</option></select>
           </label>
+          <label>Colore cornice <input type="color" id="bc" value="#ff8ac9"></label>
           <label>Filtro
-            <select id="fl">
-              <option value="0">Originale</option><option value="1">Bianco e nero</option>
-              <option value="2">Seppia</option><option value="3">Vivace</option><option value="4">Sognante</option>
-            </select>
+            <select id="fl"><option value="0">Originale</option><option value="1">Bianco e nero</option><option value="2">Seppia</option><option value="3">Vivace</option><option value="4">Sognante</option><option value="5">Rosa dolce</option><option value="6">Viola notte</option></select>
           </label>
-          <input id="cap" placeholder="Scrivi una dedica…">
+          <label>Luminosità <input type="range" id="bri" min="50" max="150" value="100"></label>
+          <label>Colori <input type="range" id="sat" min="0" max="200" value="100"></label>
           <label>Inclina <input type="range" id="rot" min="-15" max="15" value="0"></label>
+          <input id="cap" placeholder="Scrivi una dedica…">
+          <label>Carattere
+            <select id="cf"><option value="Caveat">Corsivo</option><option value="Pacifico">Pacifico</option><option value="Fredoka">Tondo</option><option value="Special Elite">Macchina</option></select>
+          </label>
+          <label>Dimensione emoji <input type="range" id="stz" min="16" max="64" value="26"></label>
           <div id="emo">
-            <button>💀</button><button>🎀</button><button>💜</button><button>🖤</button><button>⭐</button><button>🌸</button>
-            <button id="nost">🧹</button>
+            <button data-e=":)">:)</button><button data-e="&lt;3">&lt;3</button><button data-e=":3">:3</button><button data-e="^_^">^_^</button><button data-e="xD">xD</button>
+            <button data-e=";)">;)</button><button data-e="uwu">uwu</button><button data-e="o_o">o_o</button><button data-e="*">*</button><button data-e="&gt;:3">&gt;:3</button>
+            <button id="undo" aria-label="Togli l'ultimo">annulla</button><button id="nost" aria-label="Togli tutti">pulisci</button>
           </div>
-          <div class="bar"><button id="del">🗑 Elimina</button><button id="close">Fatto</button></div>
+          <div class="bar"><button id="del">Elimina</button><button id="close">Fatto</button></div>
         </div>
       </div>
     </div>
@@ -126,18 +129,18 @@
 
   <!-- #region SEZIONE MENU: pagina d'ingresso con tutte le sezioni, temi e contatore -->
   <section id="menu" class="view">
-    <div class="marquee"><span>✨ Benvenuta nel mondo di Kuromi ✨ scegli dove andare ✨ cambia tema qui sotto ✨ best viewed with love 💜</span></div>
+    <div class="marquee"><span>*** benvenuta nel mondo di Kuromi *** scegli dove andare *** cambia tema qui sotto *** best viewed with love &lt;3 ***</span></div>
     <div id="tiles"></div>
-    <div class="bar"><b>Tema:</b><span id="themes" class="bar"></span></div>
+    <div class="bar"><b>Tema:</b><select id="themes" aria-label="Tema del sito"></select></div>
     <div class="bar"><small>Visitatrice n.</small><span id="visits" class="led">000000</span><span class="blink">NEW!</span></div>
     <!-- bottoncini 88x31 stile anni 2000: si vedono solo nel tema Webcore -->
-    <div id="badges"><span class="badge b1">Made with 💜</span><span class="badge b2">Kuromi Fan Club</span><span class="badge b3">100% HTML</span><span class="badge b4">Best viewed with love</span><span class="badge b5">NEW!!</span></div>
+    <div id="badges"><span class="badge b1">Made with &lt;3</span><span class="badge b2">Kuromi Fan Club</span><span class="badge b3">100% HTML</span><span class="badge b4">Best viewed with love</span><span class="badge b5">NEW!!</span></div>
   </section>
   <!-- #endregion -->
 
   <!-- #region SEZIONE GIORNI INSIEME: contatore dalla data di inizio -->
   <section id="days" class="view">
-    <p class="desc">💌 Scegli il giorno in cui è iniziata la vostra storia: il sito conta i giorni e ti dice quanto manca al prossimo traguardo (ogni 100 giorni).</p>
+    <p class="desc">Scegli il giorno in cui è iniziata la vostra storia: il sito conta i giorni e ti dice quanto manca al prossimo traguardo (ogni 100 giorni) &lt;3</p>
     <div class="bar"><label>Dal <input type="date" id="since"></label></div>
     <div id="daysout"><div id="daysbig"></div><div id="daysdet"></div><div id="daysnext"></div></div>
   </section>
@@ -145,7 +148,7 @@
 
   <!-- #region SEZIONE SOGNI: lista di cose da fare insieme -->
   <section id="dreams" class="view">
-    <p class="desc">⭐ Scrivi i vostri sogni e le cose da fare insieme: tocca una riga per spuntarla quando si avvera.</p>
+    <p class="desc">Scrivi i vostri sogni e le cose da fare insieme: tocca una riga per spuntarla quando si avvera :)</p>
     <form class="bar" id="dform"><input id="dtext" placeholder="Un sogno o una cosa da fare insieme…" autocomplete="off"><button id="dadd" type="submit">Aggiungi</button><small id="dcount"></small></form>
     <ul id="dlist"></ul>
   </section>
@@ -153,7 +156,7 @@
 
   <!-- #region SEZIONE BISCOTTO: pensierino casuale -->
   <section id="fortune" class="view">
-    <p class="desc">🥠 Tocca il biscotto per aprirlo e leggere il pensierino. Con 📌 lo fissi: resta salvato qui sotto.</p>
+    <p class="desc">Tocca il biscotto per aprirlo e leggere il pensierino. Con il pulsante Fissa lo tieni salvato qui sotto ^_^</p>
     <div id="cookiewrap">
       <button id="cookie" aria-label="Apri il biscotto">
         <!-- biscotto disegnato in SVG: le due metà si aprono e esce il bigliettino (animazione in style.css §11) -->
@@ -164,10 +167,46 @@
         </svg>
       </button>
       <p id="ftext" hidden></p>
-      <div class="bar" id="factions" hidden><button id="pin">📌 Fissa</button><button id="again">🥠 Un altro</button></div>
+      <div class="bar" id="factions" hidden><button id="pin">Fissa</button><button id="again">Un altro</button></div>
     </div>
-    <h3 class="sub">📌 Frasi fissate</h3>
+    <h3 class="sub">Frasi fissate</h3>
     <ul id="pins"></ul>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE POMODORO (utility lavoro) -->
+  <section id="pomo" class="view">
+    <p class="desc">Lavora 25 minuti senza distrazioni, poi 5 di pausa. A fine tempo suona e ti avvisa; il tempo compare anche nel titolo della scheda (&gt;_&lt;)</p>
+    <div id="pbox">
+      <div id="pmode"></div><div id="ptime">25:00</div>
+      <div class="bar"><button id="pgo">Avvia</button><button id="preset">Azzera</button></div>
+      <div class="bar"><button data-pm="focus">Focus</button><button data-pm="break">Pausa</button></div>
+      <small id="pdone"></small>
+    </div>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE POST-IT (utility lavoro) -->
+  <section id="notes" class="view">
+    <p class="desc">Appunti rapidi: crea un post-it, scrivici sopra, cambia colore con il pulsante Colore. Si salvano da soli :P</p>
+    <div class="bar"><button id="nadd">Nuovo post-it</button></div>
+    <div id="board"></div>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE MEMORY (gioco) -->
+  <section id="memory" class="view">
+    <p class="desc">Trova tutte le coppie con meno mosse possibile. Il record viene salvato (o.O)</p>
+    <div class="bar"><button id="mnew">Nuova partita</button><span id="mmoves"></span></div>
+    <div id="mgrid"></div>
+  </section>
+  <!-- #endregion -->
+
+  <!-- #region SEZIONE ACCHIAPPA (gioco) -->
+  <section id="catch" class="view">
+    <p class="desc">Tocca i &lt;3 appena spuntano (+1) ed evita gli x_x (-2). Hai 30 secondi!</p>
+    <div class="bar"><button id="cstart">Via!</button><span id="cinfo"></span></div>
+    <div id="cgrid"></div>
   </section>
   <!-- #endregion -->
 
